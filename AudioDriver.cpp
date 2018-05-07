@@ -106,11 +106,11 @@ int main (int argc, char *argv[]) {
 
       //Get audio file name   
       cout << "Audio file name: " << a2.getSoundFileName() << endl;
-
+      Audio a3 = a1 + a2;
    
    }
    cout << "Output File: " << outputFileName << "_" << samplesPerSecond << "_" << bitCount << "_" << channelType << ".raw" << endl;
-
+   
    /*
    cout << "Program name: " << programName << endl;
    cout << "Samples: " << samplesPerSecond << endl;
