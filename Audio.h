@@ -23,11 +23,18 @@ class Audio {
       string getSoundFileName();
       string getRange();
       vector<int> getMonoSamples();
+      void setMonoSamples(vector<int> monoSamples);
       
+      //-rev reverse mono samples method
+      Audio reverseMonoSamples();
+      //-cut cut audio samples over range
+      Audio cutOverRange(int r1, int r2);
       //Overload operators
       
-      //+
+      //+ add
       Audio operator+(const Audio & rhs);
+      //| concatenate
+      Audio operator|(Audio & rhs);
 
 };
 

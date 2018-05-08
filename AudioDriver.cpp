@@ -7,7 +7,7 @@
 using namespace std;
 
 int main (int argc, char *argv[]) {
-   
+   cout << argc;
    cout << "\nAudio Program!\n";
    
    string programName = "";
@@ -18,8 +18,8 @@ int main (int argc, char *argv[]) {
    string outputFileName = "";
    string option = ""; //-add/cut/radd/cat/v/rev/rms/norm
    
-   float r1;
-   float r2;
+   int r1 = 0;
+   int r2 = 0;
    
    string soundFile1 = "";
    string soundFile2 = "";
@@ -38,7 +38,7 @@ int main (int argc, char *argv[]) {
    str.str("");
    str << argv[6];
    str >> channels; //channel to int mono or stereo
-   if (channels == '1'){
+   if (channels == 1){
       channelType = "mono";
    } else {
       channelType = "stereo";
@@ -46,7 +46,6 @@ int main (int argc, char *argv[]) {
    outputFileName = argv[8];
    
    option = argv[9];
-   
    if (option == "-cut" || option == "-radd" || option == "-v" || option == "-norm"){
       str.clear();
       str.str("");
@@ -59,13 +58,14 @@ int main (int argc, char *argv[]) {
       str >> r2;
 
       soundFile1 = argv[12];
-      if (argc > 12){
-         soundFile2 = argv[13];
+      if (argc > 13){
+         soundFile2 = argv[14];
       }
    } else {
       soundFile1 = argv[10];
-   
+    
       if (argc > 11){
+         cout << "!!!!!!!!!!!!!!!!!!!!!";
          soundFile2 = argv[11];
       }
    }
@@ -106,10 +106,49 @@ int main (int argc, char *argv[]) {
 
       //Get audio file name   
       cout << "Audio file name: " << a2.getSoundFileName() << endl;
-      Audio a3 = a1 + a2;
+      
+      if (option == "-add"){
+         Audio a3 = a1 + a2;
+         
+         string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
+         cout << "\n\nOutput File: " << formattedOutputName << "\n";
+         MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+
+      }
+      if (option == "-cat"){
+         Audio a3 = a1 | a2;
+         
+         string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
+         cout << "\n\nOutput File: " << formattedOutputName << "\n";
+         MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+      }
+      
    
+   } else {
+      //If only one sound file
+      
+      //Reverse samples
+      if (option == "-rev"){
+         cout << "Reversing audio sample\n";
+         Audio a3 = a1.reverseMonoSamples();
+         
+         string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
+         cout << "\n\nOutput File: " << formattedOutputName << "\n";
+         MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+      }
+      //Cut out samples over range
+      if (option == "-cut"){
+         cout << "Cutting audio sample between: " << r1 << "s and " << r2 << "s\n"; 
+         Audio a3 = a1.cutOverRange(r1, r2);
+         
+         string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
+         cout << "\n\nOutput File: " << formattedOutputName << "\n";
+         MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+      }
+   
+      
    }
-   cout << "Output File: " << outputFileName << "_" << samplesPerSecond << "_" << bitCount << "_" << channelType << ".raw" << endl;
+   
    
    /*
    cout << "Program name: " << programName << endl;

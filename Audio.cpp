@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <vector>
 #include <iterator>
+#include <algorithm>
 #include "Audio.h"
 
 
@@ -57,7 +58,7 @@ Audio::Audio(int samples, int bitCounts, int channels, string soundFileName){
    }
    */
    
-   MHMSHA056::createSoundFile("OUTPUT.raw", monoSamples);
+   //MHMSHA056::createSoundFile("OUTPUT.raw", monoSamples);
 
 
 
@@ -89,26 +90,53 @@ string Audio::getSoundFileName(){
 vector<int> Audio::getMonoSamples(){
    return monoSamples;
 }
+void Audio::setMonoSamples(vector<int> monoSamples1){
+   monoSamples = monoSamples1;
+}
+
+//Reverse a mono vector
+Audio Audio::reverseMonoSamples(){
+   reverse(monoSamples.begin(), monoSamples.end());
+   return *this;
+}
+//Cut out range of samples
+Audio Audio::cutOverRange(int r1, int r2){
+   monoSamples.erase(monoSamples.begin() + r1, monoSamples.begin() + r2);
+   cout << monoSamples.size();
+   return *this;
+}
 
 //Overload operator + method
 Audio Audio::operator+(const Audio & rhs){
-   cout << "Adding two audio files";
+   cout << "Adding two audio files\n";
    Audio result = *this;
    
    for (int i = 0; i < monoSamples.size(); ++i){
       result.monoSamples[i] += rhs.monoSamples[i];
    }
    
-   MHMSHA056::createSoundFile("SOMETHING", result.getMonoSamples());
+   //MHMSHA056::createSoundFile("SOMETHING", result.getMonoSamples());
    return result;
+}
+Audio Audio::operator|(Audio & rhs){
+   cout << "Concatenate two audio files\n";
+   Audio result = *this;
    
+   vector<int> monoSamples1 = result.getMonoSamples();
+   vector<int> monoSamples2 = rhs.getMonoSamples();
    
+   monoSamples1.insert(monoSamples1.end(), monoSamples2.begin(), monoSamples2.end());
+   
+   result.setMonoSamples(monoSamples1);
+   //MHMSHA056::createSoundFile("Concatenate", result.getMonoSamples());
+   //cout << "SIZE: " << result.getMonoSamples().size();
+   return result;
 }
 
 void MHMSHA056::createSoundFile(string stringOutFile, vector<int> samples){
    cout << "Creating sound file: " << stringOutFile;
    
-   ofstream pFile (stringOutFile + ".raw", ios::binary);
+   ofstream pFile (stringOutFile, ios::binary);
    
    int* sampleData = new int[samples.size()];
    
