@@ -37,7 +37,10 @@ class Audio {
       Audio operator+(const Audio & rhs);
       //| concatenate
       Audio operator|(Audio & rhs);
-
+      //^ cut operation
+      Audio operator^(pair<int, int> cutRange);
+      //* volume factor
+      Audio operator*(pair<float, float> volFact);
 };
 
 namespace MHMSHA056{

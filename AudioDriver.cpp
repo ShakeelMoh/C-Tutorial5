@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <utility>
 #include "Audio.h"
 
 using namespace std;
@@ -17,9 +18,13 @@ int main (int argc, char *argv[]) {
    string channelType;
    string outputFileName = "";
    string option = ""; //-add/cut/radd/cat/v/rev/rms/norm
+   pair<float, float> volFact;
    
    int r1 = 0;
    int r2 = 0;
+   
+   float v1 = 0.0f;
+   float v2 = 0.0f;
    
    string soundFile1 = "";
    string soundFile2 = "";
@@ -49,13 +54,27 @@ int main (int argc, char *argv[]) {
    if (option == "-cut" || option == "-radd" || option == "-v" || option == "-norm"){
       str.clear();
       str.str("");
-      str << argv[10];
-      str >> r1;
+      if (option == "-v"){
+         str << argv[10];
+         str >> v1;
+      } else {
+         str << argv[10];
+         str >> r1;
+      }
+      
       
       str.clear();
       str.str("");
-      str << argv[11];
-      str >> r2;
+      if (option == "-v"){
+         str << argv[11];
+         str >> v2;
+         volFact = make_pair(v1,v2); 
+         //pair<float, float> volFact (v1, v2);//initialize pair
+      } else {
+         str << argv[11];
+         str >> r2;
+      }
+      
 
       soundFile1 = argv[12];
       if (argc > 12){//always causing seg faults
@@ -125,10 +144,18 @@ int main (int argc, char *argv[]) {
       if (option == "-radd"){
          cout << "Ranged add over: " << r1 << " and " << r2 << "\n";
          Audio a3 = a1.addOVerRange(a2, r1, r2);
-         cout << a3.getMonoSamples().size() << " SIZE";
          string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
          cout << "\n\nOutput File: " << formattedOutputName << "\n";
          MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+      }
+      if (option == "-v"){
+         cout << "Change volume factor to: " << v1 << "/" << v2;
+         Audio a3 = a1 * volFact;
+         string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
+         cout << "\n\nOutput File: " << formattedOutputName << "\n";
+         MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+         
+
       }
       
    

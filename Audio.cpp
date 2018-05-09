@@ -127,6 +127,7 @@ Audio Audio::operator+(const Audio & rhs){
    //MHMSHA056::createSoundFile("SOMETHING", result.getMonoSamples());
    return result;
 }
+//Overload operator | to concatenate
 Audio Audio::operator|(Audio & rhs){
    cout << "Concatenate two audio files\n";
    Audio result = *this;
@@ -141,6 +142,28 @@ Audio Audio::operator|(Audio & rhs){
    //cout << "SIZE: " << result.getMonoSamples().size();
    return result;
 }
+Audio Audio::operator^(pair<int, int> cutRange){
+   cout << "Cut range of sample\n";
+   monoSamples.erase(monoSamples.begin() + get<0>(cutRange), monoSamples.begin() + get<1>(cutRange));
+   cout << monoSamples.size();
+   return *this;
+   
+}
+Audio Audio::operator*(pair<float, float> volFact){
+   cout << "Change volume factor\n";
+   //If mono only multiply by first number
+   for (int i = 0; i < monoSamples.size(); ++i){
+      monoSamples[i] *= get<0>(volFact);
+   }
+   
+   for(int i = 0; i < 10; ++i){
+      cout << monoSamples[i] << endl;
+   }
+   
+   return *this;
+   
+}
+
 
 void MHMSHA056::createSoundFile(string stringOutFile, vector<int> samples){
    cout << "Creating sound file: " << stringOutFile;
