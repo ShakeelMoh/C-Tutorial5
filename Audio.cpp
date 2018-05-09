@@ -51,6 +51,7 @@ Audio::Audio(int samples, int bitCounts, int channels, string soundFileName){
    vector<int> monoSamples1(sampleData, sampleData + numberOfSamples);
    monoSamples = monoSamples1;
    
+   
    /*
    cout << "CHECKING AUDIO FILE" << endl;
    for (int i = 0; i < 10; ++i){
@@ -86,10 +87,11 @@ int Audio::getChannels(){
 string Audio::getSoundFileName(){
    return soundFile;
 }
-
+//Return mono samples
 vector<int> Audio::getMonoSamples(){
    return monoSamples;
 }
+//Set mono samples
 void Audio::setMonoSamples(vector<int> monoSamples1){
    monoSamples = monoSamples1;
 }
@@ -103,6 +105,13 @@ Audio Audio::reverseMonoSamples(){
 Audio Audio::cutOverRange(int r1, int r2){
    monoSamples.erase(monoSamples.begin() + r1, monoSamples.begin() + r2);
    cout << monoSamples.size();
+   return *this;
+}
+//Adds to audio files over specific range
+Audio Audio::addOVerRange(Audio & rhs, int r1, int r2){  
+   for (int i = r1; i < r2+1; ++i){
+      monoSamples[i] += rhs.monoSamples[i];
+   }
    return *this;
 }
 
@@ -142,6 +151,9 @@ void MHMSHA056::createSoundFile(string stringOutFile, vector<int> samples){
    
    for (int i = 0; i < samples.size(); ++i){
       sampleData[i] = samples[i];
+      if (sampleData[i] > 255){//clamp for mono
+         sampleData[i] = 255;
+      }
    }
    
    for (int j = 0; j < samples.size(); j++){

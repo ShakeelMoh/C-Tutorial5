@@ -58,8 +58,8 @@ int main (int argc, char *argv[]) {
       str >> r2;
 
       soundFile1 = argv[12];
-      if (argc > 13){
-         soundFile2 = argv[14];
+      if (argc > 12){//always causing seg faults
+         soundFile2 = argv[13];
       }
    } else {
       soundFile1 = argv[10];
@@ -76,7 +76,7 @@ int main (int argc, char *argv[]) {
    //Print first audio file information
    cout << "Audio file 1\n " << endl;
    
-   cout << "Samples: " << a1.getSamplesPerSecond() << endl;
+   cout << "Sample rate: " << a1.getSamplesPerSecond() << endl;
 
    //Get bit count 8 or 16
    cout << "Bit count: " << a1.getBitCount() << endl;
@@ -96,7 +96,7 @@ int main (int argc, char *argv[]) {
       //Print second audio file information
       cout << "\nAudio file 2\n " << endl;
    
-      cout << "Samples: " << a2.getSamplesPerSecond() << endl;
+      cout << "Sample rate: " << a2.getSamplesPerSecond() << endl;
 
       //Get bit count 8 or 16
       cout << "Bit count: " << a2.getBitCount() << endl;
@@ -118,6 +118,14 @@ int main (int argc, char *argv[]) {
       if (option == "-cat"){
          Audio a3 = a1 | a2;
          
+         string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
+         cout << "\n\nOutput File: " << formattedOutputName << "\n";
+         MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+      }
+      if (option == "-radd"){
+         cout << "Ranged add over: " << r1 << " and " << r2 << "\n";
+         Audio a3 = a1.addOVerRange(a2, r1, r2);
+         cout << a3.getMonoSamples().size() << " SIZE";
          string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
          cout << "\n\nOutput File: " << formattedOutputName << "\n";
          MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());

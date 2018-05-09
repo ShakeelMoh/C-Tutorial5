@@ -29,6 +29,8 @@ class Audio {
       Audio reverseMonoSamples();
       //-cut cut audio samples over range
       Audio cutOverRange(int r1, int r2);
+      //-radd add audio samples over range
+      Audio addOVerRange(Audio & rhs, int r1, int r2);
       //Overload operators
       
       //+ add
