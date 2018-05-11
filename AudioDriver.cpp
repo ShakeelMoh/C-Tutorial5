@@ -19,6 +19,8 @@ int main (int argc, char *argv[]) {
    string outputFileName = "";
    string option = ""; //-add/cut/radd/cat/v/rev/rms/norm
    pair<float, float> volFact;
+   pair<int, int> cutRange;
+   pair<int, int> addRange;
    
    int r1 = 0;
    int r2 = 0;
@@ -73,11 +75,13 @@ int main (int argc, char *argv[]) {
       } else {
          str << argv[11];
          str >> r2;
+         cutRange = make_pair(r1, r2);
+         addRange = make_pair(r1, r2);
       }
       
 
       soundFile1 = argv[12];
-      if (argc > 12){//always causing seg faults
+      if (argc > 13){//always causing seg faults //13 works with cut
          soundFile2 = argv[13];
       }
    } else {
@@ -143,7 +147,8 @@ int main (int argc, char *argv[]) {
       }
       if (option == "-radd"){
          cout << "Ranged add over: " << r1 << " and " << r2 << "\n";
-         Audio a3 = a1.addOVerRange(a2, r1, r2);
+         //Audio a3 = a1.addOVerRange(a2, r1, r2);
+         Audio a3 = a1.addOverRange(a2, addRange);
          string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
          cout << "\n\nOutput File: " << formattedOutputName << "\n";
          MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
@@ -174,11 +179,23 @@ int main (int argc, char *argv[]) {
       //Cut out samples over range
       if (option == "-cut"){
          cout << "Cutting audio sample between: " << r1 << "s and " << r2 << "s\n"; 
-         Audio a3 = a1.cutOverRange(r1, r2);
-         
+         //Audio a3 = a1.cutOverRange(r1, r2);
+         Audio a3 = a1^cutRange;
          string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
          cout << "\n\nOutput File: " << formattedOutputName << "\n";
          MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+      }
+      if (option == "-rms"){
+         cout << "Calculating RMS of sound file\n";
+         float result = a1.computeRMS(); 
+         cout << "RMS Value is : " << result << "\n";
+         
+      }
+      if (option == "-norm"){
+         cout << "Normalising sound file..." << "\n";
+         float result = a1.computeRMS();
+         cout << "RMS Value before normalising: " << result << "\n";
+         //TODO   
       }
    
       

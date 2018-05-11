@@ -8,6 +8,7 @@
 #include <vector>
 #include <iterator>
 #include <algorithm>
+#include <math.h>
 #include "Audio.h"
 
 
@@ -114,6 +115,23 @@ Audio Audio::addOVerRange(Audio & rhs, int r1, int r2){
    }
    return *this;
 }
+//Add over range with pair
+Audio Audio::addOverRange(Audio & rhs, pair<int, int> addRange){
+   for (int i = get<0>(addRange); i < get<1>(addRange)+1; ++i){
+      monoSamples[i] += rhs.monoSamples[i];
+   }
+   return *this;
+}
+//Compute RMS
+float Audio::computeRMS(){
+   float RMS = 0.0f;
+   for (int i = 0; i < monoSamples.size(); ++i){
+      RMS += monoSamples[i] * monoSamples[i];
+   }
+   RMS = RMS/samplesPerSecond;
+   RMS = sqrt(RMS);
+   return RMS;
+}
 
 //Overload operator + method
 Audio Audio::operator+(const Audio & rhs){
@@ -143,14 +161,14 @@ Audio Audio::operator|(Audio & rhs){
    return result;
 }
 Audio Audio::operator^(pair<int, int> cutRange){
-   cout << "Cut range of sample\n";
+   //cout << "Cut range of sample\n";
    monoSamples.erase(monoSamples.begin() + get<0>(cutRange), monoSamples.begin() + get<1>(cutRange));
    cout << monoSamples.size();
    return *this;
    
 }
 Audio Audio::operator*(pair<float, float> volFact){
-   cout << "Change volume factor\n";
+   //cout << "Change volume factor\n";
    //If mono only multiply by first number
    for (int i = 0; i < monoSamples.size(); ++i){
       monoSamples[i] *= get<0>(volFact);
@@ -163,6 +181,7 @@ Audio Audio::operator*(pair<float, float> volFact){
    return *this;
    
 }
+
 
 
 void MHMSHA056::createSoundFile(string stringOutFile, vector<int> samples){

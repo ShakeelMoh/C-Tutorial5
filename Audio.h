@@ -28,9 +28,15 @@ class Audio {
       //-rev reverse mono samples method
       Audio reverseMonoSamples();
       //-cut cut audio samples over range
-      Audio cutOverRange(int r1, int r2);
+      Audio cutOverRange(int r1, int r2);//not used. ignore. specified as ^ operator
       //-radd add audio samples over range
-      Audio addOVerRange(Audio & rhs, int r1, int r2);
+      Audio addOVerRange(Audio & rhs, int r1, int r2);//not used. ignore
+      //-radd add over range with pair
+      Audio addOverRange(Audio & rhs, pair<int, int> addRange);
+      
+      //Compute rms
+      float computeRMS();
+      
       //Overload operators
       
       //+ add
