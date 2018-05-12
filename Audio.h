@@ -13,7 +13,7 @@ class Audio {
       int bitCount = 0; //8 bit or 16 bit
       int channel = 0; // 1 mono 2 stereo
       vector<int> monoSamples; //vector containing mono samples
-      
+      vector<pair<int, int>> stereoSamples; //vector containing stereo samples
    public:
       Audio(int samples, int bitCounts, int channels, string soundFileName);
       Audio();
@@ -23,7 +23,9 @@ class Audio {
       string getSoundFileName();
       string getRange();
       vector<int> getMonoSamples();
+      vector<pair<int, int>> getStereoSamples();
       void setMonoSamples(vector<int> monoSamples);
+      
       
       //-rev reverse mono samples method
       Audio reverseMonoSamples();
@@ -52,5 +54,6 @@ class Audio {
 namespace MHMSHA056{
    
    void createSoundFile(string stringOutFile, vector<int> samples);
-   
+   void createStereoSoundFile(string stringOutFile, vector<pair<int, int>> samples);
+
 };

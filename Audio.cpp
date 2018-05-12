@@ -33,7 +33,7 @@ Audio::Audio(int samples, int bitCounts, int channels, string soundFileName){
    inFile.seekg(0, ios::beg);
    cout << "\n\nCreating audio file...\n";
    cout << "\nLenght of file " << soundFile << " is: " << length << " bytes\n\n";
-   
+   cout << "Channel: " << channel << "\n";
    //Number of samples = fileSize/sizeof(intN_t) * channels
    int numberOfSamples = length/(sizeof(int8_t)) * channel;
    cout << "Number of samples: " << numberOfSamples << "\n";
@@ -49,8 +49,19 @@ Audio::Audio(int samples, int bitCounts, int channels, string soundFileName){
    inFile.close();
    
    //Create vector with samples in
-   vector<int> monoSamples1(sampleData, sampleData + numberOfSamples);
-   monoSamples = monoSamples1;
+   if (channel == 1){
+      
+      vector<int> monoSamples1(sampleData, sampleData + numberOfSamples);
+      monoSamples = monoSamples1;
+   } else {
+      pair<int, int> stereoSample;
+      for (int i = 0; i < numberOfSamples; i+=2){
+         stereoSample = make_pair(sampleData[i], sampleData[i+1]);
+         stereoSamples.push_back(stereoSample);
+      }
+      cout << "Stereo Sample size: " << stereoSamples.size() << endl;
+   }
+   
    
    
    /*
@@ -91,6 +102,9 @@ string Audio::getSoundFileName(){
 //Return mono samples
 vector<int> Audio::getMonoSamples(){
    return monoSamples;
+}
+vector<pair<int, int>> Audio::getStereoSamples(){
+   return stereoSamples;
 }
 //Set mono samples
 void Audio::setMonoSamples(vector<int> monoSamples1){
@@ -196,6 +210,26 @@ void MHMSHA056::createSoundFile(string stringOutFile, vector<int> samples){
       if (sampleData[i] > 255){//clamp for mono
          sampleData[i] = 255;
       }
+   }
+   
+   for (int j = 0; j < samples.size(); j++){
+      pFile.write((char*)& sampleData[j], 1);
+   }
+   
+   pFile.close();
+}
+
+void MHMSHA056::createStereoSoundFile(string stringOutFile, vector<pair<int, int>> samples){
+   cout << "Creating stereo sound file: " << stringOutFile;
+   
+   ofstream pFile (stringOutFile, ios::binary);
+   
+   int* sampleData = new int[samples.size()];
+   
+   for (int i = 0; i < samples.size(); i+=2){
+      sampleData[i] = get<0>(samples[i]);
+      sampleData[i+1] = get<1>(samples[i]);
+      
    }
    
    for (int j = 0; j < samples.size(); j++){

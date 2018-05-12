@@ -88,11 +88,9 @@ int main (int argc, char *argv[]) {
       soundFile1 = argv[10];
     
       if (argc > 11){
-         cout << "!!!!!!!!!!!!!!!!!!!!!";
          soundFile2 = argv[11];
       }
    }
-   
    Audio a1(samplesPerSecond, bitCount, channels, soundFile1);
    
       
@@ -135,7 +133,12 @@ int main (int argc, char *argv[]) {
          
          string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
          cout << "\n\nOutput File: " << formattedOutputName << "\n";
-         MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+         if (a1.getChannels() == 1){
+            MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
+         } else {
+            MHMSHA056::createStereoSoundFile(formattedOutputName, a3.getStereoSamples());
+         }
+         
 
       }
       if (option == "-cat"){
