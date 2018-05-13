@@ -56,7 +56,7 @@ int main (int argc, char *argv[]) {
    if (option == "-cut" || option == "-radd" || option == "-v" || option == "-norm"){
       str.clear();
       str.str("");
-      if (option == "-v"){
+      if (option == "-v" || option == "-norm"){
          str << argv[10];
          str >> v1;
       } else {
@@ -67,7 +67,7 @@ int main (int argc, char *argv[]) {
       
       str.clear();
       str.str("");
-      if (option == "-v"){
+      if (option == "-v" || option == "-norm"){
          str << argv[11];
          str >> v2;
          volFact = make_pair(v1,v2); 
@@ -195,10 +195,14 @@ int main (int argc, char *argv[]) {
          
       }
       if (option == "-norm"){
+         
          cout << "Normalising sound file..." << "\n";
          float result = a1.computeRMS();
          cout << "RMS Value before normalising: " << result << "\n";
-         //TODO   
+         Audio a3 = a1.normalise(volFact, result); 
+         string formattedOutputName = outputFileName + '_' + to_string(samplesPerSecond) + '_' + to_string(bitCount) + '_' + channelType + ".raw";
+         cout << "\n\nOutput File: " << formattedOutputName << "\n";
+         MHMSHA056::createSoundFile(formattedOutputName, a3.getMonoSamples());
       }
    
       

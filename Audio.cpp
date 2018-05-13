@@ -129,6 +129,15 @@ Audio Audio::addOVerRange(Audio & rhs, int r1, int r2){
    }
    return *this;
 }
+//Normalise sound file
+Audio Audio::normalise(pair<int, int> normVal, float currRMS){
+   
+   for (int i = 0; i < monoSamples.size(); ++i){
+      monoSamples[i] = monoSamples[i] * (get<0> (normVal)/currRMS);
+   }
+   cout << "RMS after normalising: " << this->computeRMS();
+   return *this;
+}
 //Add over range with pair
 Audio Audio::addOverRange(Audio & rhs, pair<int, int> addRange){
    for (int i = get<0>(addRange); i < get<1>(addRange)+1; ++i){
@@ -151,7 +160,6 @@ float Audio::computeRMS(){
 Audio Audio::operator+(const Audio & rhs){
    cout << "Adding two audio files\n";
    Audio result = *this;
-   
    for (int i = 0; i < monoSamples.size(); ++i){
       result.monoSamples[i] += rhs.monoSamples[i];
    }

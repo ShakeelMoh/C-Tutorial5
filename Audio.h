@@ -35,7 +35,8 @@ class Audio {
       Audio addOVerRange(Audio & rhs, int r1, int r2);//not used. ignore
       //-radd add over range with pair
       Audio addOverRange(Audio & rhs, pair<int, int> addRange);
-      
+      //-norm normalise
+      Audio normalise(pair<int, int> normVal, float currRMS);
       //Compute rms
       float computeRMS();
       
